@@ -15,13 +15,6 @@ import java.util.stream.Collectors;
 
 public class HierarchyRepresentationalHandler {
 
-    public HierarchyRepresentationalHandler() {
-    }
-
-    public void initializeEmployeeList(List<Employee> employees) {
-
-    }
-
     public void updateEmployeeInfo(List<Employee> employees) {
 
         if (employees != null && !employees.isEmpty()) {

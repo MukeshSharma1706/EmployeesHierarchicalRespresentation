@@ -24,25 +24,6 @@ public class HierarchyRepresentationalHandlerTest {
     HierarchyRepresentationalHandler handler = new HierarchyRepresentationalHandler();
 
     @Test
-    public void updateEmployeeInfoTestCase() {
-        Employee e1 = new Employee("Alan", 100, 150);
-        Employee e2 = new Employee("Martin", 220, 100);
-        Employee e3 = new Employee("Jamie", 150, null);
-        Employee e4 = new Employee("Alex", 275, 100);
-        Employee e5 = new Employee("Steve",400,150);
-        Employee e6 = new Employee("David",275,400);
-
-        List<Employee> listOfemployees = new ArrayList<Employee>();
-        listOfemployees.add(e1);
-        listOfemployees.add(e2);
-        listOfemployees.add(e3);
-        listOfemployees.add(e4);
-        listOfemployees.add(e5);
-        listOfemployees.add(e6);
-
-
-    }
-    @Test
     public void updateEmployeeInfoTest() {
         Employee e1 = new Employee("Alan",100,150);
         Employee e2 = new Employee("Martin",220,100);
