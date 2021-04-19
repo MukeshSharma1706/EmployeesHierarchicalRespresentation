@@ -5,6 +5,9 @@
  * */
 package model;
 
+/**
+ * TabularStructure to store the employee hierarchy in the representable form.
+ */
 public class TabularStructure {
     String ceo;
     String manager;

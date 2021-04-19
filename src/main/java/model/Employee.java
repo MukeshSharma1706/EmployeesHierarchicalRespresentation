@@ -1,6 +1,6 @@
 /**
  *  Class : Employee
- *  Description : To keep the employee record.
+ *  Description : To keep Employee record
  *
  * */
 
@@ -22,6 +22,8 @@ public class Employee {
         this.name = name;
         this.empId = empId;
         this.managerId = managerId;
+        this.position = null;
+        this.listOfManagedEmp =null;
     }
 
     public String getName() {

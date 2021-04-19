@@ -8,13 +8,44 @@ package handler;
 import model.Employee;
 import model.EmployeePosition;
 import model.TabularStructure;
-
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class HierarchyRepresentationalHandler {
 
+    /**
+     * This function validate the input data before processing
+     * @param employees
+     * @return
+     */
+    public boolean validateInput(List<Employee> employees) {
+        //check emp_id should not be null
+        if (employees.stream().filter(employee -> employee.getEmpId() == null).findAny().isPresent()) {
+            System.out.println("Employee Id cannot be null");
+            return false;
+        }
+        if (employees.stream().filter(employee -> employee.getEmpId().equals(employee.getManagerId())).findAny().isPresent()){
+            System.out.println("Employee Id and Manager_id cannot be same");
+            return false;
+        }
+        // Validate there is no duplicate emp_id
+        Set<Integer> uniqueEmpIds = new HashSet<Integer>();
+        for (Employee employee : employees) {
+                if(uniqueEmpIds.add(employee.getEmpId()) == false) {
+                    System.out.println("Duplicate Employee Id is not allowed");
+                    return  false;
+                }
+        }
+        return true;
+    }
+
+    /**
+     * This function adds list of employees managed by Manager/CEO.
+     * @param employees : list of employees
+     */
     public void updateEmployeeInfo(List<Employee> employees) {
 
         if (employees != null && !employees.isEmpty()) {
@@ -31,6 +62,10 @@ public class HierarchyRepresentationalHandler {
         }
     }
 
+    /**
+     * This functions add position for the employee
+     * @param employees : list of employees
+     */
     private void updateEmployeePosition(List<Employee> employees){
         List<Integer> empIds = employees.stream()
                 .filter(employee -> employee.getEmpId() != null)
@@ -55,9 +90,14 @@ public class HierarchyRepresentationalHandler {
                 }
             }
         }
-
     }
 
+    /**
+     * This function returns the list of employees based on the position
+     * @param position  : position can CEO,MANAGER,ENGINEER,INVALID_EMPLOYEE
+     * @param employees : list of employees
+     * @return list of employee based on position
+     */
     public List<Employee> getEmployeeHierarchy(EmployeePosition position, List<Employee> employees) {
         if (position == null || employees == null || employees.isEmpty()) {
             System.out.println("Employee List and position cannot be null");
@@ -68,28 +108,40 @@ public class HierarchyRepresentationalHandler {
                 .collect(Collectors.toList());
     }
 
-    public List<TabularStructure>  representData(List<Employee> employees) {
+    /**
+     * This function creates a representational data.
+     * @param employees : list of employees
+     * @return
+     */
+    public List<TabularStructure> representData(List<Employee> employees) {
 
-        List<TabularStructure> tabularStructure = new ArrayList<TabularStructure>();
-        int maxNamelen = 0;
+        List<Employee> employeesHierarchy = getEmployeeHierarchy(EmployeePosition.CEO, employees);
+        List<TabularStructure> tabularStructure = null;
 
-        for (Employee ceo : employees) {
-            tabularStructure.add(new TabularStructure(ceo.getName(),"",""));
-            maxNamelen = maxNamelen < ceo.getName().length() ? ceo.getName().length() : maxNamelen;
-            if (ceo.getListOfManagedEmp() != null) {
-                for (Employee manager : ceo.getListOfManagedEmp()) {
-                    tabularStructure.add(new TabularStructure("",manager.getName(),""));
-                    maxNamelen = maxNamelen < manager.getName().length() ? manager.getName().length() : maxNamelen;
-                    if (manager.getListOfManagedEmp() != null) {
-                        for (Employee emp : manager.getListOfManagedEmp()) {
-                            tabularStructure.add(new TabularStructure("","",emp.getName()));
-                            maxNamelen = maxNamelen < emp.getName().length() ? emp.getName().length() : maxNamelen;
+        if(employeesHierarchy == null || employeesHierarchy.isEmpty()) {
+            System.out.println("There is no CEO in the provided employee list");
+        } else {
+            tabularStructure = new ArrayList<TabularStructure>();
+            int maxNameLen = 0;
+
+            for (Employee ceo : employeesHierarchy) {
+                tabularStructure.add(new TabularStructure(ceo.getName(), "", ""));
+                maxNameLen = maxNameLen < ceo.getName().length() ? ceo.getName().length() : maxNameLen;
+                if (ceo.getListOfManagedEmp() != null) {
+                    for (Employee manager : ceo.getListOfManagedEmp()) {
+                        tabularStructure.add(new TabularStructure("", manager.getName(), ""));
+                        maxNameLen = maxNameLen < manager.getName().length() ? manager.getName().length() : maxNameLen;
+                        if (manager.getListOfManagedEmp() != null) {
+                            for (Employee emp : manager.getListOfManagedEmp()) {
+                                tabularStructure.add(new TabularStructure("", "", emp.getName()));
+                                maxNameLen = maxNameLen < emp.getName().length() ? emp.getName().length() : maxNameLen;
+                            }
                         }
                     }
                 }
             }
+            TabularStructure.setMaxWidth(maxNameLen);
         }
-        TabularStructure.setMaxWidth(maxNamelen);
         return tabularStructure;
     }
 }

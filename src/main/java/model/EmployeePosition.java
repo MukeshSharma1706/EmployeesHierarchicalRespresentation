@@ -1,3 +1,6 @@
+/**
+ * EmployeePositions
+ */
 package model;
 
 public enum EmployeePosition {
